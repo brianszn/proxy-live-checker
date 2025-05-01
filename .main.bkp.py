@@ -18,46 +18,45 @@ class ProxyList:
 
         return self.proxies_list
     
-    def test_proxy_list(self, proxy: str) -> None:  
+    
 
-        # Necessita de um argumento, para receber apenas 1 proxy, pois servirá de iterador no executor.map().
+    def fetch_proxy_list(self):
+
+        self.get_proxy_list()
 
         headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                       "(KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
         }
-
-        try:    
-
-            response = r.get('https://ifconfig.me/', proxies={"http": proxy}, headers=headers, timeout=10)
-            if response.status_code == 200:
-                print(Fore.YELLOW +f'[free-proxy] ➔ {proxy} ', Fore.GREEN + '[ONLINE]')
-
-        except r.exceptions.RequestException as e:
-            pass
-
-
-
-    def fetch_proxy_list(self, arg_function): # Aqui uso o ThreadPoolExecutor
-
         while True:
 
             print(Fore.CYAN + f'[+] Descansando da rotação de proxy por 10 segundos.')
 
             self.get_proxy_list()
+            for i in range(0, len(self.proxies_list)):
 
-            # Usando ThreadPoolExecutor para verificar os proxies em paralelo
-            with ThreadPoolExecutor(max_workers=100) as executor:
-                executor.map(arg_function, self.proxies_list)  # Aqui ele recebe nosso método, e utiilza o 2º param, para pegar cada item e jogar no 1º param.
+                try:
+                        
+                    response = r.get(self.url, proxies={"http": self.proxies_list[i]}, headers=headers, timeout=10).status_code
 
-            sleep(10)
+                    if response == 200:
+                        print(Fore.YELLOW +f'{self.proxies_list[i]}', Fore.GREEN + '[ONLINE]')
 
+                except r.exceptions.RequestException as e:
+                    print(Fore.YELLOW + f'{self.proxies_list[i]}', Fore.RED + '[OFFLINE]')
+
+        sleep(10)
+
+                
 
 if __name__ == "__main__":
 
     proxies_list = []
-    url = "http://127.0.0.1/"
-    api_url = "https://api.proxyscrape.com/v2/?request=displayproxies&protocol=http&timeout=10000&country=all&ssl=all&anonymity=all"
 
+    url = "http://127.0.0.1/"
+    
+    api_url = "https://api.proxyscrape.com/v2/?request=displayproxies&protocol=http&timeout=10000&country=all&ssl=all&anonymity=all"
+    
     proxy = ProxyList(api_url, proxies_list, url)
-    proxy.fetch_proxy_list(proxy.test_proxy_list)
+    
+    proxy.fetch_proxy_list()
