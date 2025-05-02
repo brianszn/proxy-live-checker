@@ -15,3 +15,5 @@ pip install -r requirements.txt
 ```bash
 python3 main.py 50
 ```
+
+Obs: 50 is the threads number.
