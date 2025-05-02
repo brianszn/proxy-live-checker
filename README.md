@@ -2,6 +2,8 @@
 
 This is a Python script that fetches and checks live proxies using multiple threads.
 
+<img src="banner.png">
+
 ## 🚀 Requirements
 
 - Python 3.x
