@@ -29,14 +29,13 @@ class ProxyList:
 
         try:    
 
-            response = r.get('https://ifconfig.me/', proxies={"http": proxy}, headers=headers, timeout=10)
+            response = r.get('http://ifconfig.me/ip', proxies={"http": proxy}, headers=headers, timeout=10)
             if response.status_code == 200:
-                print(Fore.YELLOW +f'[free-proxy] ➔ {proxy} ', Fore.GREEN + '[ONLINE]')
+
+                print(Fore.YELLOW +f'[free-proxy] ➔ {proxy}\n[ifconfig.me] ➔ {response.text} ', Fore.GREEN + '[ONLINE]\n')
 
         except r.exceptions.RequestException as e:
             pass
-
-
 
     def fetch_proxy_list(self, arg_function): # Aqui uso o ThreadPoolExecutor
 
