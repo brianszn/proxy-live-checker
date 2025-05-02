@@ -7,7 +7,7 @@ This is a Python script that fetches and checks live proxies using multiple thre
 ## 🚀 Requirements
 
 - Python 3.x
-- Required libraries (edit according to your script):
+- Required libraries (check requirements.txt):
 
 ```bash
 pip install -r requirements.txt
