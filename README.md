@@ -9,3 +9,9 @@ This is a Python script that fetches and checks live proxies using multiple thre
 
 ```bash
 pip install -r requirements.txt
+```
+
+## Usage
+```bash
+python3 main.py 50
+```
