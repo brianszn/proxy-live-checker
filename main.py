@@ -1,8 +1,9 @@
-
 import requests as r
 from colorama import Fore, Back, Style
 from time import sleep
 from concurrent.futures import ThreadPoolExecutor
+import sys
+
 
 class ProxyList:
 
@@ -34,22 +35,48 @@ class ProxyList:
 
                 print(Fore.YELLOW +f'[free-proxy] ➔ {proxy}\n[ifconfig.me] ➔ {response.text} ', Fore.GREEN + '[ONLINE]\n')
 
+                with open("live-proxy.txt", "a") as f:
+                    f.write(f"[free-proxy][http] ➔ {proxy} ➔ [ifconfig.me] ➔ {response.text} [ONLINE]\n")
+                
+
         except r.exceptions.RequestException as e:
             pass
 
-    def fetch_proxy_list(self, arg_function): # Aqui uso o ThreadPoolExecutor
+        
 
-        while True:
+    def fetch_proxy_list(self, arg_function, threads: int) -> None: # Aqui uso o ThreadPoolExecutor
 
-            print(Fore.CYAN + f'[+] Descansando da rotação de proxy por 10 segundos.')
-
-            self.get_proxy_list()
+        self.get_proxy_list()
 
             # Usando ThreadPoolExecutor para verificar os proxies em paralelo
-            with ThreadPoolExecutor(max_workers=100) as executor:
-                executor.map(arg_function, self.proxies_list)  # Aqui ele recebe nosso método, e utiilza o 2º param, para pegar cada item e jogar no 1º param.
+        with ThreadPoolExecutor(max_workers=int(threads)) as executor:
+            executor.map(arg_function, self.proxies_list)
 
-            sleep(10)
+    def main(self):
+        def ban():
+            banner = r"""
+
+        ▗▄▄▖  ▗▄▖ ▗▖ ▗▖  ▗▖▗▄▄▖ ▗▖ ▗▖ ▗▄▄▖    ▗▖    ▗▄▖ ▗▄▄▖  ▗▄▄▖
+        ▐▌ ▐▌▐▌ ▐▌▐▌  ▝▚▞▘ ▐▌ ▐▌▐▌ ▐▌▐▌       ▐▌   ▐▌ ▐▌▐▌ ▐▌▐▌   
+        ▐▛▀▘ ▐▌ ▐▌▐▌   ▐▌  ▐▛▀▘ ▐▌ ▐▌ ▝▀▚▖    ▐▌   ▐▛▀▜▌▐▛▀▚▖ ▝▀▚▖
+        ▐▌   ▝▚▄▞▘▐▙▄▄▖▐▌  ▐▌   ▝▚▄▞▘▗▄▄▞▘    ▐▙▄▄▖▐▌ ▐▌▐▙▄▞▘▗▄▄▞▘  presents.
+                                                                
+                    live http proxy searcher, by sxdv.
+                    github: @brianszn
+                    Use: python3 main.py 'threads number'
+
+            """
+            return banner
+        print(ban())
+        try:
+            if sys.argv[1]:
+                pass
+        except IndexError as e:
+            print("\nUse: python3 main.py 'threads number'")
+            sys.exit()       
+        sleep(5)       
+        self.fetch_proxy_list(proxy.test_proxy_list, sys.argv[1])
+        print(Fore.YELLOW +f'file: live-proxy.txt has been created.')
 
 
 if __name__ == "__main__":
@@ -57,6 +84,7 @@ if __name__ == "__main__":
     proxies_list = []
     url = "http://127.0.0.1/"
     api_url = "https://api.proxyscrape.com/v2/?request=displayproxies&protocol=http&timeout=10000&country=all&ssl=all&anonymity=all"
-
     proxy = ProxyList(api_url, proxies_list, url)
-    proxy.fetch_proxy_list(proxy.test_proxy_list)
+
+    proxy.main()
+      
